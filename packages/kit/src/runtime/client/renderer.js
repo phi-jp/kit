@@ -353,12 +353,15 @@ export class Renderer {
 		this.updating = true;
 
 		if (this.started) {
-			this.current = navigation_result.state;
+			// Re-evaluate if different pathname
+			if (this.current.url.pathname !== navigation_result.state.url.pathname) {
+				this.root.$set({
+					components: []
+				});
+				await tick();
+			}
 
-			this.root.$set({
-				components: []
-			});
-			await tick();
+			this.current = navigation_result.state;
 
 			this.root.$set(navigation_result.props);
 			this.stores.navigating.set(null);
